@@ -16,6 +16,15 @@ module Mousetrap
       'invoice'
     end
 
+    def attributes
+      {
+        :id           => id,
+        :number       => number,
+        :billing_date => billing_date,
+        :created_at   => created_at
+      }
+    end
+
     def self.attributes_from_api(attributes)
       {
         :id           => attributes['id'],
