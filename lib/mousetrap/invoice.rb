@@ -6,6 +6,10 @@ module Mousetrap
       :billing_date,
       :created_at
 
+    def initialize(hash = {})
+      super(self.class.attributes_from_api(hash))
+    end
+
     protected
 
     def self.plural_resource_name
@@ -22,15 +26,6 @@ module Mousetrap
         :number       => number,
         :billing_date => billing_date,
         :created_at   => created_at
-      }
-    end
-
-    def self.attributes_for_api(attributes)
-      {
-        :billingDatetime  => attributes[:billing_date],
-        :createdDatetime  => attributes[:created_at],
-        :id               => attributes[:id],
-        :number           => attributes[:number]
       }
     end
 
