@@ -147,6 +147,8 @@ module Mousetrap
         :credit_card_expiration_date  => attributes['ccExpirationDate'],
         :credit_card_last_four_digits => attributes['ccLastFour'],
         :credit_card_type             => attributes['ccType'],
+        :invoices                     => attributes['invoices'],
+        :items                        => attributes['items']
       }
     end
   end
