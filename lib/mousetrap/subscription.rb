@@ -24,7 +24,9 @@ module Mousetrap
       :created_at,
       :credit_card_expiration_date,
       :credit_card_last_four_digits,
-      :credit_card_type
+      :credit_card_type,
+      :invoices,
+      :items
 
     def self.[](code)
       raise_api_unsupported_error
@@ -40,6 +42,16 @@ module Mousetrap
 
     def self.exists?(code)
       raise_api_unsupported_error
+    end
+
+    def current_invoice
+      invoice_attributes = if invoices['invoice'].kind_of?(Array)
+        invoices['invoice'][0]
+      else
+        invoices['invoice']
+      end
+
+      Invoice.new(invoice_attributes)
     end
 
     def attributes
