@@ -25,6 +25,15 @@ module Mousetrap
       }
     end
 
+    def self.attributes_for_api(attributes)
+      {
+        :billingDatetime  => attributes[:billing_date],
+        :createdDatetime  => attributes[:created_at],
+        :id               => attributes[:id],
+        :number           => attributes[:number]
+      }
+    end
+
     def self.attributes_from_api(attributes)
       {
         :id           => attributes['id'],
