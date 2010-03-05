@@ -113,7 +113,9 @@ module Mousetrap
       :created_at,
       :credit_card_expiration_date,
       :credit_card_last_four_digits,
-      :credit_card_type
+      :credit_card_type,
+      :items,
+      :invoices
 
     def self.plural_resource_name
       'subscriptions'
