@@ -24,6 +24,16 @@ module Mousetrap
       }
     end
 
+    def add_item_quantity(item_code, quantity = 1)
+      attrs = { :itemCode => item_code, :quantity => quantity }
+      self.class.put_resource 'customers', 'add-item-quantity', code, attrs
+    end
+
+    def remove_item_quantity(item_code, quantity = 1)
+      attrs = { :itemCode => item_code, :quantity => quantity }
+      self.class.put_resource 'customers', 'remove-item-quantity', code, attrs
+    end
+
     def attributes_for_api
       # TODO: superclass?
       self.class.attributes_for_api(attributes, new_record?)
