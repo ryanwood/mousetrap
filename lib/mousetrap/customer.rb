@@ -108,12 +108,12 @@ module Mousetrap
     end
 
     def self.attributes_for_api(attributes, new_record = true)
-      mutated_hash = {
-        :email     => attributes[:email],
-        :firstName => attributes[:first_name],
-        :lastName  => attributes[:last_name],
-        :company   => attributes[:company]
-      }
+      mutated_hash = {}
+
+      [:firstName => :first_name, :lastName => :last_name, :email => :email, :company => :company, :notes => :notes].each do |api_key, orig_key|
+        mutated_hash[api_key] = attributes[orig_key] if attributes[orig_key]
+      end
+
       mutated_hash.merge!(:code => attributes[:code]) if new_record
       mutated_hash
     end
