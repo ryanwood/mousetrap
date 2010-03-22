@@ -2,7 +2,9 @@ module Mousetrap
   class Plan < Resource
     attr_accessor \
       :code,
-      :name
+      :name,
+      :items,
+      :recurring_charge_amount
 
     def self.all
       response = get_resources plural_resource_name
@@ -22,8 +24,10 @@ module Mousetrap
 
     def self.attributes_from_api(attributes)
       {
-        :code => attributes['code'],
-        :name => attributes['name']
+        :code                    => attributes['code'],
+        :name                    => attributes['name'],
+        :items                   => attributes['items'],
+        :recurring_charge_amount => attributes['recurringChargeAmount']
       }
     end
   end

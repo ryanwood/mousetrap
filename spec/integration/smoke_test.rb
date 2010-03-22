@@ -115,6 +115,16 @@ describe "The Wrapper Gem" do
         it_should_behave_like "a Customer record from CheddarGetter"
         it_should_behave_like "an active Subscription record from CheddarGetter"
       end
+
+      describe "When I create a customer with international card" do
+        before :all do
+          attributes = Factory.attributes_for :alt_new_customer
+          @customer = Mousetrap::Customer.create attributes_for
+        end
+
+        it_should_behave_like "a Customer record from CheddarGetter"
+        it_should_behave_like "an active Subscription record from CheddarGetter"
+      end
     end
 
     describe ".destroy_all" do
