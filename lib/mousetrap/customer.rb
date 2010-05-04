@@ -9,6 +9,19 @@ module Mousetrap
       :company,
       :subscription
 
+    def add_custom_charge(item_code, amount = 1.0, quantity = 1, description = nil)
+      attributes = {
+        :chargeCode  => item_code,
+        :eachAmount  => amount,
+        :quantity    => quantity,
+        :description => description
+      }
+
+      response = self.class.put_resource 'customers', 'add-charge', attributes
+      raise response['error'] if response['error']
+      response
+    end
+
     def subscription_attributes=(attributes)
       self.subscription = Subscription.new attributes
     end
@@ -22,16 +35,6 @@ module Mousetrap
         :last_name  => last_name,
         :company    => company
       }
-    end
-
-    def add_item_quantity(item_code, quantity = 1)
-      attrs = { :itemCode => item_code, :quantity => quantity }
-      self.class.put_resource 'customers', 'add-item-quantity', code, attrs
-    end
-
-    def remove_item_quantity(item_code, quantity = 1)
-      attrs = { :itemCode => item_code, :quantity => quantity }
-      self.class.put_resource 'customers', 'remove-item-quantity', code, attrs
     end
 
     def attributes_for_api
@@ -118,13 +121,12 @@ module Mousetrap
     end
 
     def self.attributes_for_api(attributes, new_record = true)
-      mutated_hash = {}
-
-      api_accessors = { :first_name => :firstName, :last_name => :lastName, :company => :company, :email => :email, :notes => :notes }
-      attributes.each do |key, value|
-        mutated_hash[api_accessors[key]] = value
-      end
-
+      mutated_hash = {
+        :email     => attributes[:email],
+        :firstName => attributes[:first_name],
+        :lastName  => attributes[:last_name],
+        :company   => attributes[:company]
+      }
       mutated_hash.merge!(:code => attributes[:code]) if new_record
       mutated_hash
     end

@@ -2,7 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Mousetrap::Customer do
   include Fixtures
-  
+
   def customer_attributes_for_api(customer)
     {
       :firstName => customer.first_name,
@@ -319,20 +319,44 @@ describe Mousetrap::Customer do
       end
     end
   end
+
+  describe '#add_custom_charge' do
+    context "when there's a subscription instance" do
+      before :all do
+        @customer = Factory(:new_customer)
+      end
+
+      it "should not raise an error with CheddarGetter" do
+        @customer.class.should_receive(:put_resource).with('customers', 'add-charge', { :eachAmount => 45.00, :chargeCode => 'BOGUS', :quantity => 1, :description => nil }).and_return({ :id => 'some_id' })
+        @customer.add_custom_charge('BOGUS', 45.00, 1, nil)
+      end
+    end
+
+    context "with there is not a subscription" do
+      before :all do
+        @customer = Mousetrap::Customer.new
+      end
+
+      it "should raise an error with CheddarGetter" do
+        @customer.class.stub :put_resource => { 'error' => 'some error message' }
+        expect { @customer.add_custom_charge('BOGUS') }.to raise_error('some error message')
+      end
+    end
+  end
 end
 
 
 __END__
 
-customers: 
-  customer: 
-    company: 
+customers:
+  customer:
+    company:
     lastName: cgejerpkyw
     code: krylmrreef@example.com
-    subscriptions: 
-      subscription: 
-        plans: 
-          plan: 
+    subscriptions:
+      subscription:
+        plans:
+          plan:
             name: Test
             setupChargeAmount: "42.00"
             code: TEST
@@ -348,18 +372,18 @@ customers:
             description: This is my test plan. There are many like it, but this one is mine.
             billingFrequencyPer: month
             setupChargeCode: TEST_SETUP
-        gatewayToken: 
+        gatewayToken:
         id: 7ccea6de-0a4d-102d-a92d-40402145ee8b
         createdDatetime: "2009-10-14T20:08:14+00:00"
         ccType: visa
         ccLastFour: "1111"
         ccExpirationDate: "2012-12-31T00:00:00+00:00"
-        canceledDatetime: 
-        invoices: 
-          invoice: 
+        canceledDatetime:
+        invoices:
+          invoice:
           - number: "5"
-            transactions: 
-              transaction: 
+            transactions:
+              transaction:
                 response: approved
                 code: ""
                 amount: "42.00"
@@ -367,17 +391,17 @@ customers:
                 id: 7ce53c78-0a4d-102d-a92d-40402145ee8b
                 createdDatetime: "2009-10-14T20:08:14+00:00"
                 transactedDatetime: "2009-10-14T20:08:14+00:00"
-                parentId: 
-                charges: 
-                  charge: 
+                parentId:
+                charges:
+                  charge:
                     code: TEST_SETUP
                     quantity: "1"
                     id: 7ce2cb6e-0a4d-102d-a92d-40402145ee8b
                     createdDatetime: "2009-10-14T20:08:14+00:00"
                     type: setup
                     eachAmount: "42.00"
-                    description: 
-                gatewayAccount: 
+                    description:
+                gatewayAccount:
                   id: ""
             billingDatetime: "2009-10-14T20:08:14+00:00"
             id: 7cd25072-0a4d-102d-a92d-40402145ee8b
@@ -388,7 +412,7 @@ customers:
             id: 7cd4253c-0a4d-102d-a92d-40402145ee8b
             createdDatetime: "2009-10-14T20:08:14+00:00"
             type: subscription
-    gatewayToken: 
+    gatewayToken:
     id: 7ccd6e5e-0a4d-102d-a92d-40402145ee8b
     createdDatetime: "2009-10-14T20:08:14+00:00"
     modifiedDatetime: "2009-10-14T20:08:14+00:00"
