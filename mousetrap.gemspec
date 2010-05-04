@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{mousetrap}
-  s.version = "0.5.0"
+  s.version = "0.5.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jon Larkowski", "Sandro Turriate", "Wolfram Arnold", "Corey Grusden"]
-  s.date = %q{2009-10-25}
+  s.date = %q{2010-05-04}
   s.description = %q{CheddarGetter API Client in Ruby}
   s.email = %q{jonlarkowski@gmail.com}
   s.extra_rdoc_files = [
@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
      "VERSION",
      "lib/mousetrap.rb",
      "lib/mousetrap/customer.rb",
+     "lib/mousetrap/invoice.rb",
      "lib/mousetrap/plan.rb",
      "lib/mousetrap/resource.rb",
      "lib/mousetrap/subscription.rb",
@@ -48,7 +49,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/hashrocket/mousetrap}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{CheddarGetter API Client in Ruby}
   s.test_files = [
     "spec/factories.rb",
