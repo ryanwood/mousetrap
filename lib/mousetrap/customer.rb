@@ -17,7 +17,7 @@ module Mousetrap
         :description => description
       }
 
-      response = self.class.put_resource 'customers', 'add-charge', attributes
+      response = self.class.put_resource 'customers', 'add-charge', code, attributes
       raise response['error'] if response['error']
       response
     end
