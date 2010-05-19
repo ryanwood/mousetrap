@@ -8,6 +8,7 @@ module Mousetrap
       :credit_card_number,
       :credit_card_expiration_month,
       :credit_card_expiration_year,
+      :credit_card_code,
       :billing_country,
       :billing_address,
       :billing_city,
@@ -63,6 +64,7 @@ module Mousetrap
         :credit_card_number           => credit_card_number,
         :credit_card_expiration_month => credit_card_expiration_month,
         :credit_card_expiration_year  => credit_card_expiration_year,
+        :credit_card_code             => credit_card_code,
         :billing_country              => billing_country,
         :billing_address              => billing_address,
         :billing_city                 => billing_city,
@@ -133,11 +135,12 @@ module Mousetrap
         :ccNumber     => attributes[:credit_card_number],
         :ccExpMonth   => ("%02d" % attributes[:credit_card_expiration_month] if attributes[:credit_card_expiration_month]),
         :ccExpYear    => attributes[:credit_card_expiration_year],
+        :ccCardCode   => attributes[:credit_card_code],
         :ccCountry    => attributes[:billing_country],
         :ccAddress    => attributes[:billing_address],
         :ccCity       => attributes[:billing_city],
         :ccState      => attributes[:billing_state],
-        :ccZip        => attributes[:billing_zip_code],
+        :ccZip        => attributes[:billing_zip_code]
       }
     end
 
