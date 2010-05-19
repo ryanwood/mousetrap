@@ -6,6 +6,9 @@ require 'httparty'
 module Mousetrap
   API_UNSUPPORTED = "CheddarGetter API doesn't support this."
 
+  class ApiDown < Exception
+  end
+
   autoload :Customer,     'mousetrap/customer'
   autoload :Plan,         'mousetrap/plan'
   autoload :Resource,     'mousetrap/resource'

@@ -331,7 +331,7 @@ describe Mousetrap::Customer do
       end
 
       it "should not raise an error with CheddarGetter" do
-        @customer.class.should_receive(:put_resource).with('customers', 'add-charge', { :eachAmount => 45.00, :chargeCode => 'BOGUS', :quantity => 1, :description => nil }).and_return({ :id => 'some_id' })
+        @customer.class.should_receive(:put_resource).with('customers', 'add-charge', @customer.code, { :eachAmount => 45.00, :chargeCode => 'BOGUS', :quantity => 1, :description => nil }).and_return({ :id => 'some_id' })
         @customer.add_custom_charge('BOGUS', 45.00, 1, nil)
       end
     end
@@ -347,6 +347,19 @@ describe Mousetrap::Customer do
       end
     end
   end
+
+  # describe '#update_tracked_item_quantity' do
+  #   context "when there's a subscription instance" do
+  #     before do
+  #       @customer = Factory(:new_customer)
+  #     end
+  # 
+  #     it "should not raise an error with CheddarGetter" do
+  #       @customer.class.should_receive(:put_resource).with('customers', 'add-item-quantity', @customer.code, { :quantity => 1, :itemCode => 'BOGUS' }).and_return({ :id => 'some_id' })
+  #       @customer.update_tracked_item_quantity('BOGUS', 1).should_not raise_error
+  #     end
+  #   end
+  # end
 end
 
 

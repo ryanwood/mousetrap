@@ -9,6 +9,31 @@ module Mousetrap
       :company,
       :subscription
 
+    def update_tracked_item_quantity(item_code, quantity = 1)
+      tracked_item_resource = if quantity == quantity.abs
+        'add-item-quantity'
+      else
+        'remove-item-quantity'
+      end
+
+      attributes = {
+        :itemCode => item_code,
+        :quantity => quantity.abs
+      }
+
+      response = self.class.put_resource 'customers', tracked_item_resource, code, attributes
+      raise response['error'] if response['error']
+      response
+    end
+
+    def add_item_quantity(item_code, quantity = 1)
+      update_tracked_item_quantity(item_code, quantity)
+    end
+
+    def remove_item_quantity(item, quantity = 1)
+      update_tracked_item_quantity(item_code, -quantity)
+    end
+
     def add_custom_charge(item_code, amount = 1.0, quantity = 1, description = nil)
       attributes = {
         :chargeCode  => item_code,

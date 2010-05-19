@@ -89,10 +89,14 @@ module Mousetrap
 
     def self.get_resource(resource, code)
       get resource_path(resource, 'get', code)
+    rescue Errno::ECONNREFUSED
+      raise_api_is_down
     end
 
     def self.get_resources(resource)
       get resource_path(resource, 'get')
+    rescue Errno::ECONNREFUSED
+      raise_api_is_down
     end
 
     def self.member_action(resource, action, code, attributes = nil)
@@ -103,11 +107,15 @@ module Mousetrap
       else
         post path
       end
+    rescue Errno::ECONNREFUSED
+      raise_api_is_down
     end
 
     def self.post_resource(resource, action, attributes)
       path = resource_path(resource, action)
       post path, :body => attributes
+    rescue Errno::ECONNREFUSED
+      raise_api_is_down
     end
 
     def self.put_resource(resource, action, code, attributes)
@@ -116,6 +124,10 @@ module Mousetrap
 
     def self.raise_api_unsupported_error
       raise NotImplementedError, API_UNSUPPORTED
+    end
+
+    def self.raise_api_is_down
+      raise ApiDown, "CheddarGetter is currently down"
     end
 
     def self.resource_path(resource, action, code = nil)
