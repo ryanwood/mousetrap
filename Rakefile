@@ -4,12 +4,12 @@ require 'rake'
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "mousetrap"
+    gem.name = "ryanwood-mousetrap"
     gem.summary = %Q{CheddarGetter API Client in Ruby}
     gem.description = %Q{CheddarGetter API Client in Ruby}
-    gem.email = "jonlarkowski@gmail.com"
-    gem.homepage = "http://github.com/hashrocket/mousetrap"
-    gem.authors = ["Jon Larkowski", "Sandro Turriate", "Wolfram Arnold", "Corey Grusden"]
+    gem.email = "ryan.wood@gmail.com"
+    gem.homepage = "http://github.com/ryanwood/mousetrap"
+    gem.authors = ["Jon Larkowski", "Sandro Turriate", "Wolfram Arnold", "Corey Grusden", "Cameron Cox", "Ryan Wood"]
     gem.add_dependency 'httparty', '>= 0.4.2'
     gem.add_development_dependency "activesupport", '>= 2.3.3'
     gem.add_development_dependency "rspec", '>= 1.2.9'
