@@ -45,7 +45,7 @@ describe Mousetrap::Resource do
   describe ".[]" do
     before do
       customer_hash = Factory.attributes_for :existing_customer
-      customer_hash = HashWithIndifferentAccess.new customer_hash
+      customer_hash = Hash.new customer_hash
       @code = customer_hash[:code]
       @server_response_hash = { 'widgets' => { 'widget' => customer_hash } }
       Mousetrap::Widget.stub(:get_resource => @server_response_hash)
