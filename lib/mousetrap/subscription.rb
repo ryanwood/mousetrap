@@ -8,6 +8,7 @@ module Mousetrap
       :credit_card_number,
       :credit_card_expiration_month,
       :credit_card_expiration_year,
+      :credit_card_code,
       :billing_zip_code,
       :plan,
 
@@ -47,6 +48,7 @@ module Mousetrap
         :credit_card_number           => credit_card_number,
         :credit_card_expiration_month => credit_card_expiration_month,
         :credit_card_expiration_year  => credit_card_expiration_year,
+        :credit_card_code             => credit_card_code,
         :billing_zip_code             => billing_zip_code,
       }
     end
@@ -111,6 +113,7 @@ module Mousetrap
         :ccNumber     => attributes[:credit_card_number],
         :ccExpMonth   => ("%02d" % attributes[:credit_card_expiration_month] if attributes[:credit_card_expiration_month]),
         :ccExpYear    => attributes[:credit_card_expiration_year],
+        :ccCardCode   => attributes[:credit_card_code],
         :ccZip        => attributes[:billing_zip_code],
       }
     end

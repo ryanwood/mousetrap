@@ -54,6 +54,12 @@ describe Mousetrap::Subscription do
   end
 
   describe '.attributes_for_api' do
+    it "allows for a CVV (card) code" do
+      Mousetrap::Subscription.attributes_for_api(
+        :credit_card_code => 456
+      )[:ccCardCode].should == 456
+    end
+    
     context "when month is set" do
       it 'coerces the month to 2 digits' do
         Mousetrap::Subscription.attributes_for_api(
