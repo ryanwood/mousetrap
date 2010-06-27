@@ -64,13 +64,13 @@ module Mousetrap
     end
 
     def self.all
-      response = get_resources 'customers'
-
-      if response['error']
-        if response['error'] =~ /No customers found/
-          return []
+      begin
+        response = get_resources 'customers'
+      rescue Mousetrap::ResponseError => e
+        if e.message =~ /No customers found/
+          return [] 
         else
-          raise Mousetrap::Error, response['error']
+          raise
         end
       end
 
@@ -131,22 +131,21 @@ module Mousetrap
 
     def create
       response = self.class.post_resource 'customers', 'new', attributes_for_api_with_subscription
-
-      raise Mousetrap::Error, response['error'] if response['error']
-
       returned_customer = self.class.build_resource_from response
       self.id = returned_customer.id
       response
     end
 
     def update
-      if subscription
-        response = self.class.put_resource 'customers', 'edit', code, attributes_for_api_with_subscription
-      else
-        response = self.class.put_resource 'customers', 'edit-customer', code, attributes_for_api
-      end
+      mutated_attributes = subscription ? attributes_for_api_with_subscription : attributes_for_api
+      mutated_attributes.delete_if { |k, v| v.blank? }
       
-      raise Mousetrap::Error, response['error'] if response['error']
+      if subscription
+        response = self.class.put_resource 'customers', 'edit', code, mutated_attributes
+      else
+        response = self.class.put_resource 'customers', 'edit-customer', code, mutated_attributes
+      end
+      self.class.raise_errors(response)
     end
   end
 end

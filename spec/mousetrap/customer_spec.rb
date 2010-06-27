@@ -40,17 +40,15 @@ describe Mousetrap::Customer do
     end
 
     it "handles kludgy 'no customers found' response" do
-      Mousetrap::Customer.stub :get_resources => {
-        'error' => 'Resource not found: No customers found.'
-      }
+      Mousetrap::Customer.stub :get => response_error_hash('Resource not found: No customers found.')
       Mousetrap::Customer.all.should == []
     end
 
     it "raises error if response has one" do
       expect do
-        Mousetrap::Customer.stub :get_resources => { 'error' => "some other error" }
+        Mousetrap::Customer.stub :get => response_error_hash('some other error')
         Mousetrap::Customer.all
-      end.to raise_error(Mousetrap::Error, "some other error")
+      end.to raise_error(Mousetrap::ResponseError, "some other error")
     end
 
     it "builds resources from the response" do
@@ -271,8 +269,8 @@ describe Mousetrap::Customer do
       end
 
       it "raises error if CheddarGetter reports one" do
-        @customer.class.stub :post_resource => {'error' => 'some error message'}
-        expect { @customer.send(:create) }.to raise_error(Mousetrap::Error, 'some error message')
+        @customer.class.stub :post => response_error_hash('some error message')
+        expect { @customer.send(:create) }.to raise_error(Mousetrap::ResponseError, 'some error message')
       end
 
       it "builds a customer from the CheddarGetter return values" do
@@ -296,26 +294,32 @@ describe Mousetrap::Customer do
     end
 
     describe "#update" do
-      context "when there's a subscription instance" do
-        let(:customer) { Mousetrap::Customer.new :code => 'some code' }
+      let(:customer) { Mousetrap::Customer.new :code => 'some code' }
+      
+      it "only send attributes that have been set" do
+        customer.stub :attributes_for_api => { :first_name => 'John', :last_name => nil, :email => '' }
+        customer.class.should_receive(:put_resource).with('customers', 'edit-customer', 'some code', { :first_name => 'John' }).and_return({:id => 'some_id'})
+        customer.send :update
+      end
 
+      it "raises error if CheddarGetter reports one" do
+        customer.class.stub :post => response_error_hash('some error message')
+        expect { customer.send(:update) }.to raise_error(Mousetrap::ResponseError, 'some error message')
+      end
+      
+      context "when there's a subscription instance" do
         it "puts the customer with subscription when there's a subscription instance" do
           customer.stub :subscription => stub
-          customer.stub :attributes_for_api_with_subscription => 'some attributes with subscription'
-          customer.class.should_receive(:put_resource).with('customers', 'edit', 'some code', 'some attributes with subscription').and_return({:id => 'some_id'})
+          customer.stub :attributes_for_api_with_subscription => {}
+          customer.class.should_receive(:put_resource).with('customers', 'edit', 'some code', {}).and_return({:id => 'some_id'})
           customer.send :update
         end
 
         it "puts just the customer when no subscription instance" do
           customer.stub :subscription => nil
-          customer.stub :attributes_for_api => 'some attributes'
-          customer.class.should_receive(:put_resource).with('customers', 'edit-customer', 'some code', 'some attributes').and_return({:id => 'some_id'})
+          customer.stub :attributes_for_api => {}
+          customer.class.should_receive(:put_resource).with('customers', 'edit-customer', 'some code', {}).and_return({:id => 'some_id'})
           customer.send :update
-        end
-
-        it "raises error if CheddarGetter reports one" do
-          customer.class.stub :put_resource => {'error' => 'some error message'}
-          expect { customer.send(:update) }.to raise_error(Mousetrap::Error, 'some error message')
         end
       end
     end

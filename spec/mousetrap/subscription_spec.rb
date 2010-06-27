@@ -87,10 +87,6 @@ describe Mousetrap::Subscription do
   end
 
   describe '.update' do
-    before do
-      Mousetrap::Subscription.stub :put_resource => { 'some' => 'hash' }
-    end
-
     let (:mutated_attributes) do
       {
         :with => 'something',
@@ -104,14 +100,15 @@ describe Mousetrap::Subscription do
     end
 
     it "transforms the attribute names for CheddarGetter" do
+      Mousetrap::Subscription.stub :put_resource => { 'some' => 'hash' }
       Mousetrap::Subscription.should_receive(:attributes_for_api).with('some attributes').and_return({})
       do_update
     end
 
     it "deletes unfilled attribute entries" do
-
+      Mousetrap::Subscription.stub :put_resource => { 'some' => 'hash' }
       Mousetrap::Subscription.stub :attributes_for_api => mutated_attributes
-
+      
       Mousetrap::Subscription.should_receive(:put_resource).with(
         'customers',
         'edit-subscription',
@@ -123,6 +120,7 @@ describe Mousetrap::Subscription do
     end
 
     it "calls put_resource" do
+      Mousetrap::Subscription.stub :put_resource => { 'some' => 'hash' }
       Mousetrap::Subscription.stub :attributes_for_api => mutated_attributes
 
       Mousetrap::Subscription.should_receive(:put_resource).with(
@@ -138,9 +136,8 @@ describe Mousetrap::Subscription do
     it "raises a CheddarGetter error if returned" do
       Mousetrap::Subscription.stub \
         :attributes_for_api => mutated_attributes,
-        :put_resource => { 'error' => 'some error message' }
-
-      expect { do_update }.to raise_error(Mousetrap::Error, 'some error message')
+        :post => response_error_hash('some error message')
+      expect { do_update }.to raise_error(Mousetrap::ResponseError, 'some error message')
     end
   end
 end

@@ -48,15 +48,16 @@ describe Mousetrap::Resource do
       customer_hash = Hash.new customer_hash
       @code = customer_hash[:code]
       @server_response_hash = { 'widgets' => { 'widget' => customer_hash } }
-      Mousetrap::Widget.stub(:get_resource => @server_response_hash)
     end
 
     it "gets a resource with widget code" do
+      Mousetrap::Widget.stub(:get_resource => @server_response_hash)
       Mousetrap::Widget.should_receive(:get_resource).with('widgets', @code).and_return(@server_response_hash)
       Mousetrap::Widget[@code]
     end
 
     context "returned widget instance" do
+      before { Mousetrap::Widget.stub(:get_resource => @server_response_hash) }
       subject { Mousetrap::Widget[@code] }
       it { should be_instance_of(Mousetrap::Widget) }
       it { should_not be_new_record }
@@ -65,17 +66,16 @@ describe Mousetrap::Resource do
 
     context "when there's errors" do
       it "handles kludgy 'Resource not found' response" do
-        Mousetrap::Widget.stub :get_resource => {
-          'error' => 'Resource not found: Customer not found for code=cantfindme within productCode=MOUSETRAP_TEST'
-        }
+        Mousetrap::Widget.stub :get => response_error_hash(
+          'Resource not found: Customer not found for code=cantfindme within productCode=MOUSETRAP_TEST')
         Mousetrap::Widget['cantfindme'].should be_nil
       end
 
       it "raises error if response has one" do
         expect do
-          Mousetrap::Widget.stub :get_resource => { 'error' => 'some other error' }
+          Mousetrap::Widget.stub :get => response_error_hash('some other error')
           Mousetrap::Widget['some_resource_code'].should be_nil
-        end.to raise_error(Mousetrap::Error, 'some other error')
+        end.to raise_error(Mousetrap::ResponseError, 'some other error')
       end
     end
   end
@@ -182,6 +182,29 @@ describe Mousetrap::Resource do
           '/xml/widgets/some_action/productCode/my_product_code/code/some_widget_code',
           :body => 'some_hash')
         subject.put_resource 'widgets', 'some_action', 'some_widget_code', 'some_hash'
+      end
+    end
+    
+    describe ".raise_errors" do
+      it "catches Precondition Failed (412) errors" do
+        response = response_error_hash('A value is required', { 'code' => '412', 'auxCode' => 'firstName:isEmpty' })
+        expect do
+          subject.raise_errors(response)
+        end.to raise_error(Mousetrap::PreconditionFailedError, 'A value is required. (firstName:isEmpty)' )
+      end
+      
+      it "catches Unprocessable Entity (422) errors" do
+        response = response_error_hash('Credit card declined', { 'code' => '422' })
+        expect do
+          subject.raise_errors(response)
+        end.to raise_error(Mousetrap::UnprocessableEntityError, 'Credit card declined' )
+      end
+      
+      it "catches all other errors" do
+        response = response_error_hash('Something happened', { 'code' => '500' })
+        expect do
+          subject.raise_errors(response)
+        end.to raise_error(Mousetrap::ResponseError, 'Something happened' )
       end
     end
   end

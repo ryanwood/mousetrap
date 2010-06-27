@@ -15,17 +15,15 @@ module Mousetrap
       #
       # { "error" => "Resource not found: Customer not found for
       #    code=cantfindme within productCode=MOUSETRAP_TEST"}
-
-      response = get_resource plural_resource_name, code
-
-      if response['error']
-        if response['error'] =~ /not found/
+      begin
+        response = get_resource plural_resource_name, code
+      rescue Mousetrap::ResponseError => e
+        if e.message =~ /not found/
           return nil
         else
-          raise Mousetrap::Error, response['error']
+          raise
         end
       end
-
       build_resource_from response
     end
 
@@ -88,26 +86,26 @@ module Mousetrap
     end
 
     def self.get_resource(resource, code)
-      get resource_path(resource, 'get', code)
+      raise_errors(get(resource_path(resource, 'get', code)))
     end
 
     def self.get_resources(resource)
-      get resource_path(resource, 'get')
+      raise_errors(get(resource_path(resource, 'get')))
     end
 
     def self.member_action(resource, action, code, attributes = nil)
       path = resource_path(resource, action, code)
-
       if attributes
-        post path, :body => attributes
+        response = post path, :body => attributes
       else
-        post path
+        response = post path
       end
+      raise_errors(response)
     end
 
     def self.post_resource(resource, action, attributes)
       path = resource_path(resource, action)
-      post path, :body => attributes
+      raise_errors(post(path, :body => attributes))
     end
 
     def self.put_resource(resource, action, code, attributes)
@@ -122,6 +120,22 @@ module Mousetrap
 
     def self.uri_encode(value)
       URI.encode(value.to_s, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
+    end
+
+    def self.raise_errors(response)
+      if response && response['error']
+        attrs = response['error'].attributes
+        code = attrs['code'] if attrs && attrs['code']
+        case code
+        when '412':
+          raise PreconditionFailedError.new(response['error'], attrs)
+        when '422':
+          raise UnprocessableEntityError.new(response['error'], attrs)
+        else
+          raise ResponseError.new(response['error'], attrs)
+        end
+      end
+      response
     end
 
     def member_action(action)
