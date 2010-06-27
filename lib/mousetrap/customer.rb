@@ -30,7 +30,7 @@ module Mousetrap
     end
 
     def attributes_for_api_with_subscription
-      raise "Must have subscription" unless subscription
+      raise Mousetrap::Error, "Must have subscription" unless subscription
       a = attributes_for_api
       a[:subscription] = subscription.attributes_for_api
       a
@@ -55,7 +55,7 @@ module Mousetrap
     end
 
     def switch_to_plan(plan_code)
-      raise "Can only call this on an existing CheddarGetter customer." unless exists?
+      raise Mousetrap::Error, "Can only call this on an existing CheddarGetter customer." unless exists?
 
       attributes = { :planCode => plan_code }
       self.class.put_resource('customers', 'edit-subscription', code, attributes)
@@ -70,7 +70,7 @@ module Mousetrap
         if response['error'] =~ /No customers found/
           return []
         else
-          raise response['error']
+          raise Mousetrap::Error, response['error']
         end
       end
 
@@ -132,7 +132,7 @@ module Mousetrap
     def create
       response = self.class.post_resource 'customers', 'new', attributes_for_api_with_subscription
 
-      raise response['error'] if response['error']
+      raise Mousetrap::Error, response['error'] if response['error']
 
       returned_customer = self.class.build_resource_from response
       self.id = returned_customer.id
@@ -145,8 +145,8 @@ module Mousetrap
       else
         response = self.class.put_resource 'customers', 'edit-customer', code, attributes_for_api
       end
-
-      raise response['error'] if response['error']
+      
+      raise Mousetrap::Error, response['error'] if response['error']
     end
   end
 end

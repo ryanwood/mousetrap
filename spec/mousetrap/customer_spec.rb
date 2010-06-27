@@ -50,7 +50,7 @@ describe Mousetrap::Customer do
       expect do
         Mousetrap::Customer.stub :get_resources => { 'error' => "some other error" }
         Mousetrap::Customer.all
-      end.to raise_error(RuntimeError, "some other error")
+      end.to raise_error(Mousetrap::Error, "some other error")
     end
 
     it "builds resources from the response" do
@@ -245,7 +245,7 @@ describe Mousetrap::Customer do
     it "raises an error if not existing CheddarGetter customer" do
       c = Mousetrap::Customer.new :code => 'some_customer_code'
       c.stub :exists? => false
-      expect { c.switch_to_plan 'some_plan_code' }.to raise_error(/existing/)
+      expect { c.switch_to_plan 'some_plan_code' }.to raise_error(Mousetrap::Error, /existing/)
     end
 
     it "puts a subscription with a plan code" do
@@ -272,7 +272,7 @@ describe Mousetrap::Customer do
 
       it "raises error if CheddarGetter reports one" do
         @customer.class.stub :post_resource => {'error' => 'some error message'}
-        expect { @customer.send(:create) }.to raise_error('some error message')
+        expect { @customer.send(:create) }.to raise_error(Mousetrap::Error, 'some error message')
       end
 
       it "builds a customer from the CheddarGetter return values" do
@@ -315,7 +315,7 @@ describe Mousetrap::Customer do
 
         it "raises error if CheddarGetter reports one" do
           customer.class.stub :put_resource => {'error' => 'some error message'}
-          expect { customer.send(:update) }.to raise_error('some error message')
+          expect { customer.send(:update) }.to raise_error(Mousetrap::Error, 'some error message')
         end
       end
     end

@@ -4,7 +4,13 @@ begin; require 'rubygems'; rescue LoadError; end
 require 'httparty'
 
 module Mousetrap
-  API_UNSUPPORTED = "CheddarGetter API doesn't support this."
+  
+  class Error < StandardError; end
+  class ApiNotSupported < NotImplementedError
+    def initialize
+      super("CheddarGetter API doesn't support this.")
+    end
+  end
 
   autoload :Customer,     'mousetrap/customer'
   autoload :Plan,         'mousetrap/plan'

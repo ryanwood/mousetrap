@@ -75,7 +75,7 @@ describe Mousetrap::Resource do
         expect do
           Mousetrap::Widget.stub :get_resource => { 'error' => 'some other error' }
           Mousetrap::Widget['some_resource_code'].should be_nil
-        end.to raise_error(RuntimeError, 'some other error')
+        end.to raise_error(Mousetrap::Error, 'some other error')
       end
     end
   end

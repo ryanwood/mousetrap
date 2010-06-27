@@ -4,34 +4,34 @@ describe Mousetrap::Subscription do
   include Fixtures
 
   describe '.[]' do
-    it 'raises NotImplementedError' do
+    it 'raises Mousetrap::ApiNotSupported' do
       expect do
         Mousetrap::Subscription['some_code']
-      end.to raise_error(NotImplementedError, Mousetrap::API_UNSUPPORTED)
+      end.to raise_error(Mousetrap::ApiNotSupported)
     end
   end
 
   describe '.all' do
-    it 'raises NotImplementedError' do
+    it 'raises Mousetrap::ApiNotSupported' do
       expect do
         Mousetrap::Subscription.all
-      end.to raise_error(NotImplementedError, Mousetrap::API_UNSUPPORTED)
+      end.to raise_error(Mousetrap::ApiNotSupported)
     end
   end
 
   describe '.destroy_all' do
-    it 'raises NotImplementedError' do
+    it 'raises Mousetrap::ApiNotSupported' do
       expect do
         Mousetrap::Subscription.destroy_all
-      end.to raise_error(NotImplementedError, Mousetrap::API_UNSUPPORTED)
+      end.to raise_error(Mousetrap::ApiNotSupported)
     end
   end
 
   describe '.exists?' do
-    it 'raises NotImplementedError' do
+    it 'raises Mousetrap::ApiNotSupported' do
       expect do
         Mousetrap::Subscription.exists?('some_code')
-      end.to raise_error(NotImplementedError, Mousetrap::API_UNSUPPORTED)
+      end.to raise_error(Mousetrap::ApiNotSupported)
     end
   end
 
@@ -46,10 +46,10 @@ describe Mousetrap::Subscription do
   end
 
   describe '#destroy' do
-    it "raises a NotImplementedError" do
+    it "raises a Mousetrap::ApiNotSupported" do
       expect do
         Mousetrap::Subscription.new.destroy
-      end.to raise_error(NotImplementedError)
+      end.to raise_error(Mousetrap::ApiNotSupported)
     end
   end
 
@@ -78,11 +78,11 @@ describe Mousetrap::Subscription do
   end
 
   describe '#exists?' do
-    it 'raises NotImplementedError' do
+    it 'raises Mousetrap::ApiNotSupported' do
       expect do
         s = Mousetrap::Subscription.new
         s.exists?
-      end.to raise_error(NotImplementedError, Mousetrap::API_UNSUPPORTED)
+      end.to raise_error(Mousetrap::ApiNotSupported)
     end
   end
 
@@ -140,7 +140,7 @@ describe Mousetrap::Subscription do
         :attributes_for_api => mutated_attributes,
         :put_resource => { 'error' => 'some error message' }
 
-      expect { do_update }.to raise_error('some error message')
+      expect { do_update }.to raise_error(Mousetrap::Error, 'some error message')
     end
   end
 end

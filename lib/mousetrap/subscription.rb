@@ -24,19 +24,19 @@ module Mousetrap
       :credit_card_type
 
     def self.[](code)
-      raise_api_unsupported_error
+      raise Mousetrap::ApiNotSupported
     end
 
     def self.all
-      raise_api_unsupported_error
+      raise Mousetrap::ApiNotSupported
     end
 
     def self.destroy_all
-      raise_api_unsupported_error
+      raise Mousetrap::ApiNotSupported
     end
 
     def self.exists?(code)
-      raise_api_unsupported_error
+      raise Mousetrap::ApiNotSupported
     end
 
     def attributes
@@ -58,11 +58,11 @@ module Mousetrap
     end
 
     def destroy
-      self.class.raise_api_unsupported_error
+      raise Mousetrap::ApiNotSupported
     end
 
     def exists?
-      self.class.raise_api_unsupported_error
+      raise Mousetrap::ApiNotSupported
     end
 
     def self.new_from_api(attributes)
@@ -83,7 +83,7 @@ module Mousetrap
         mutated_attributes
       )
 
-      raise response['error'] if response['error']
+      raise Mousetrap::Error, response['error'] if response['error']
     end
 
 

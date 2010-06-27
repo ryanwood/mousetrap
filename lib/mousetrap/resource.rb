@@ -22,7 +22,7 @@ module Mousetrap
         if response['error'] =~ /not found/
           return nil
         else
-          raise response['error']
+          raise Mousetrap::Error, response['error']
         end
       end
 
@@ -112,10 +112,6 @@ module Mousetrap
 
     def self.put_resource(resource, action, code, attributes)
       member_action(resource, action, code, attributes)
-    end
-
-    def self.raise_api_unsupported_error
-      raise NotImplementedError, API_UNSUPPORTED
     end
 
     def self.resource_path(resource, action, code = nil)
